@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stella.commons.answer.mapper.AnswerMapper">
+
+    <resultMap id="answerMap" type="com.stella.commons.answer.dto.AnswerDTO">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="imageId" column="image_id"/>
+        <result property="appUrl" column="app_url"/>
+        <result property="webUrl" column="web_url"/>
+        <result property="email" column="email"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="insertAnswer" parameterType="com.stella.commons.answer.dto.AnswerDTO">
+        INSERT INTO answer (id, post_id, image_id, app_url, web_url, email, content, created_at)
+        VALUES (#{id}, #{postId}, #{imageId}, #{appUrl}, #{webUrl}, #{email}, #{content}, #{createdAt})
+    </insert>
+
+    <update id="updateAnswer" parameterType="com.stella.commons.answer.dto.AnswerDTO">
+        UPDATE answer
+        <set>
+            post_id = #{postId},
+            image_id = #{imageId},
+            app_url = #{appUrl},
+            web_url = #{webUrl},
+            email = #{email},
+            content = #{content},
+            created_at = #{createdAt},
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteAnswer" parameterType="com.stella.commons.answer.dto.AnswerDTO">
+        DELETE FROM answer WHERE id = #{id}
+    </delete>
+
+    <select id="selectAnswerTotCnt" resultType="int">
+        SELECT COUNT(*) FROM answer
+        <where>
+            <include refid="answerSql"/>
+        </where>
+    </select>
+
+    <select id="selectAnswerList" resultMap="answerMap">
+        SELECT id, post_id, image_id, app_url, web_url, email, content, created_at FROM answer
+        <where>
+            <include refid="answerSql"/>
+        </where>
+    </select>
+
+    <select id="selectAnswer" parameterType="com.stella.commons.answer.dto.AnswerDTO" resultMap="answerMap">
+        SELECT id, post_id, image_id, app_url, web_url, email, content, created_at FROM answer WHERE id = #{id}
+    </select>
+
+    <sql id="answerSql">
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+    </sql>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stella.commons.post.mapper.PostMapper">
+
+    <resultMap id="postMap" type="com.stella.commons.post.dto.PostDTO">
+        <id property="id" column="id"/>
+        <result property="appUrl" column="app_url"/>
+        <result property="webUrl" column="web_url"/>
+        <result property="email" column="email"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="appKind" column="app_kind"/>
+    </resultMap>
+
+    <insert id="insertPost" parameterType="com.stella.commons.post.dto.PostDTO">
+        INSERT INTO post (id, app_url, web_url, email, created_at, app_kind)
+        VALUES (#{id}, #{appUrl}, #{webUrl}, #{email}, #{createdAt}, #{appKind})
+    </insert>
+
+    <update id="updatePost" parameterType="com.stella.commons.post.dto.PostDTO">
+        UPDATE post
+        <set>
+            app_url = #{appUrl},
+            web_url = #{webUrl},
+            email = #{email},
+            created_at = #{createdAt},
+            app_kind = #{appKind},
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deletePost" parameterType="com.stella.commons.post.dto.PostDTO">
+        DELETE FROM post WHERE id = #{id}
+    </delete>
+
+    <select id="selectPostTotCnt" resultType="int">
+        SELECT COUNT(*) FROM post
+        <where>
+            <include refid="postSql"/>
+        </where>
+    </select>
+
+    <select id="selectPostList" resultMap="postMap">
+        SELECT id, app_url, web_url, email, created_at, app_kind FROM post
+        <where>
+            <include refid="postSql"/>
+        </where>
+    </select>
+
+    <select id="selectPost" parameterType="com.stella.commons.post.dto.PostDTO" resultMap="postMap">
+        SELECT id, app_url, web_url, email, created_at, app_kind FROM post WHERE id = #{id}
+    </select>
+
+    <sql id="postSql">
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+    </sql>
+
+</mapper>
